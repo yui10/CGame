@@ -18,5 +18,8 @@
     <ClCompile Include="Gomoku.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Maze.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
