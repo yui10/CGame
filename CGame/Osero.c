@@ -15,27 +15,33 @@
 int map[MAP_SIZE + 2][MAP_SIZE + 2] = { 0 };
 int cursorX = 1, cursorY = 1;
 int turn = 2, turn2 = 1;
-int p1 = 0, p2 = 0, NF = 0, CP = 0;
+
+typedef struct
+{
+	int Player1, Player2, NoItem, CanPlace;
+
+}Item_Count;
 
 void show();
 void put(int y, int x);
 void check();
-void count();
+Item_Count count();
 
 int main() {
 	map[4][4] = map[5][5] = PLAYER1;
 	map[4][5] = map[5][4] = PLAYER2;
 	int noPut = 0;
+	Item_Count item;
 	while (1) {
 		turn = turn % 2 + 1;
 		turn2 = 3 - turn;
 
 		check();
-		count();
+		item = count();
 		if (noPut == 2) {
 			break;
 		}
-		if (CP == 0) {
+		if (item.CanPlace == 0) {
 			noPut++;
 			continue;
 		}
@@ -48,7 +54,7 @@ int main() {
 			else if (turn == PLAYER2) {
 				printf("›‚Ìƒ^[ƒ“\n");
 			}
-			printf("1p %d\t2p %d\n", p1, p2);
+			printf("1p %d\t2p %d\n", item.Player1, item.Player2);
 			int back_y = cursorY, back_x = cursorX;
 			int doNotPut = 0;
 			int y = 0, x = 0;
@@ -82,10 +88,10 @@ int main() {
 		}
 
 	}
-	if (p1 > p2) {
+	if (item.Player1 > item.Player2) {
 		MessageBox(NULL, TEXT("1p‚ÌŸ‚¿!!"), TEXT("Ÿ”s"), MB_OK | MB_ICONINFORMATION);
 	}
-	else if (p1 < p2) {
+	else if (item.Player1 < item.Player2) {
 		MessageBox(NULL, TEXT("2p‚ÌŸ‚¿!!"), TEXT("Ÿ”s"), MB_OK | MB_ICONINFORMATION);
 	}
 	else {
@@ -178,24 +184,25 @@ void check() {
 	}
 }
 
-void count() {
-	p1 = 0, p2 = 0, NF = 0, CP = 0;
+Item_Count count() {
+	Item_Count item = { 0,0,0,0 };
 	for (int i = 1; i <= MAP_SIZE; i++) {
 		for (int j = 1; j <= MAP_SIZE; j++) {
 			switch (map[i][j]) {
 			case NO_ITEM:
-				NF++;
+				item.NoItem++;
 				break;
 			case PLAYER1:
-				p1++;
+				item.Player1++;
 				break;
 			case PLAYER2:
-				p2++;
+				item.Player2++;
 				break;
 			case CAN_PLACE:
-				CP++;
+				item.CanPlace++;
 				break;
 			}
 		}
 	}
+	return item;
 }
